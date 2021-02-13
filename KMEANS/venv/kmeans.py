@@ -12,15 +12,15 @@ class Kmeans:
         # datos=pd.read_csv(direccion,engine='python')
         print('===========================')
         # datos.info()#muestro el nombre de las columnas del dataset
-        variables=self.datos.drop(labels=['tempo','cod', 'artista', 'nombre'],axis=1) #elimino las columnas que no se usan
+        variables=self.datos.drop(labels=['tempo','cod', 'artista', 'nombre'],axis=1) #elimino las columnas que no se usan, las de texto
         # print(variables.describe())#para mostrar los primeros datos
 
-        # datosNormalizados=(variables-variables.min())/(variables.max()-variables.min())
+        # datosNormalizados=(variables-variables.min())/(variables.max()-variables.min())#en caso que haya valores muy dispersos y toque normalizar
         datosNormalizados=variables
         #
-        self.determinarK(datosNormalizados)#para determinar un valor de k
+        self.determinarK(datosNormalizados)#para determinar un valor de k aceptable, opcional
         #
-        self.kmeansPro(datosNormalizados=datosNormalizados,datosOriginal=self.datos)
+        self.kmeansPro(datosNormalizados=datosNormalizados,datosOriginal=self.datos)#realizao entrenamiento
         #
         self.graficarFrecuencias(self.datos)
         self.prepararParaGraficaren2D(datosNormalizados,self.datos)
@@ -64,7 +64,7 @@ class Kmeans:
         color_theme=np.array(['blue','green','orange'])
         ax.scatter(x=pca_nombres_vinos.x,y=pca_nombres_vinos.y,c=color_theme[pca_nombres_vinos.KMeans_cluster],s=50)
         plt.show()
-        # 3d
+        # para un 3d
         # fig = plt.figure(figsize=(10, 8))
         # ax = fig.add_subplot(111, projection='3d')
         #
@@ -95,9 +95,7 @@ class Kmeans:
         plt.show()
     def guardarDatos(self,datos,direccion):
         datos.sort_values('KMeans_cluster', ascending=True, inplace=True)
-        # datos.info()
-        # variables = datos.
-        # datos.to_csv(direccion)
+        datos.to_csv(direccion)
 
 
 

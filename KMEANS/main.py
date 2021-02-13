@@ -1,20 +1,18 @@
 
 from Spotify import SpotifyPro
 from kmeans import Kmeans
-# from spotipy import Spotify
 
 
 def main():
 
-    # k.importarDatos('')
+
     spotify=SpotifyPro()
-    df=spotify.iniciar('1QP6tyANnZZ9bRTfQG4X7a')
-    # print(df.head(1))
+    df=spotify.iniciar(idPlaylist='1QP6tyANnZZ9bRTfQG4X7a')
+
     k = Kmeans(df)
     if(len(df)):
         k.importarDatos()
-    # k=Kmeans2(df)
-    # k.iniciar()
+
 
 
 
