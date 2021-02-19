@@ -23,13 +23,13 @@ class Kmeans:
         self.kmeansPro(datosNormalizados=datosNormalizados,datosOriginal=self.datos)#realizao entrenamiento
         #
         self.graficarFrecuencias(self.datos)
-        self.prepararParaGraficaren2D(datosNormalizados,self.datos)
+        # self.prepararParaGraficaren2D(datosNormalizados,self.datos)
         self.guardarDatos(self.datos,'C:/Users/chris/Desktop/Universidad de Cuenca/IA/DATASETS/datos.csv')
 
     def determinarK(self,datos):
         wcss=[] #lista vacia para almacenar los valoes wcss
         for i in range(1,11):
-            kmeans=KMeans(n_clusters=i,max_iter=300)
+            kmeans=KMeans(n_clusters=i,max_iter=500)
             kmeans.fit(datos)
             wcss.append(kmeans.inertia_)
 
@@ -40,10 +40,11 @@ class Kmeans:
         plt.show()
 
     def kmeansPro(self,datosNormalizados,datosOriginal):
-        cluster=KMeans(n_clusters=3,max_iter=300)#creacion del modelo
+        cluster=KMeans(n_clusters=4,max_iter=500)#creacion del modelo
         cluster.fit(datosNormalizados)
-        x=cluster.predict(datosNormalizados.head(3))
-
+        # x=cluster.predict(datosNormalizados.head(1))
+        # print('**************************************************')
+        # print(x.info())
         #una vez listo el cluster, agrego la clasificacion al archivo original
         datosOriginal['KMeans_cluster']=cluster.labels_
 

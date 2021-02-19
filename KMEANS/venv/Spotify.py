@@ -4,10 +4,14 @@ from Cancion import  Cancion
 import pandas as pd
 import numpy as np
 class SpotifyPro:
-    client_id = 'bf4d5b85f6c946e9b99f0fccfe4c1c6e'
-    client_secret = '3238226e21004352acdb7ad2c9a4e357'
+    # client_id = 'bf4d5b85f6c946e9b99f0fccfe4c1c6e'
+    # client_secret = '3238226e21004352acdb7ad2c9a4e357'
+    # redirect_uri = 'http://localhost:8081'
+    # username = '31d4craw673kyd2qycdsn3v3l6ru'
+    client_id = '6d9aeae5685c411bb1f986a596249234'
+    client_secret = '0600803331294830a741c870c1b73a0c'
     redirect_uri = 'http://localhost:8081'
-    username = '31d4craw673kyd2qycdsn3v3l6ru'
+    username = '9m17obrzd9kx0cqkbgeroqt3x'
     scope = 'user-library-read'
     token=None
     spotify=None
