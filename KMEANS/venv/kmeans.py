@@ -12,23 +12,31 @@ class Kmeans:
         # datos=pd.read_csv(direccion,engine='python')
         print('===========================')
         # datos.info()#muestro el nombre de las columnas del dataset
-        variables=self.datos.drop(labels=['tempo','cod', 'artista', 'nombre'],axis=1) #elimino las columnas que no se usan, las de texto
-        # print(variables.describe())#para mostrar los primeros datos
+        tempoOriginal=pd.DataFrame(self.datos.drop(labels=['cod', 'artista', 'nombre', 'energy',  'danceability', 'valence'],axis=1),dtype='float64')#normalizo el tempo
+        aux=self.datos.drop(labels=['cod', 'artista', 'nombre','tempo','loudness'],axis=1) #elimino las columnas que no se usan, las de texto
+        tempoAux=(tempoOriginal-tempoOriginal.min())/(tempoOriginal.max()-tempoOriginal.min())
+        variables=pd.DataFrame(aux,dtype='float64')
+        variables.insert(0,'tempo',tempoAux['tempo'])
+        variables.insert(0, 'Loudness', tempoAux['loudness'])
+        # grabar=self.datos.drop(labels=['cod', 'artista', 'tempo','loudness'],axis=1)
+        # grabar.insert(0, 'tempo', tempoAux['tempo'])
+        # grabar.insert(0, 'Loudness', tempoAux['loudness'])
 
-        # datosNormalizados=(variables-variables.min())/(variables.max()-variables.min())#en caso que haya valores muy dispersos y toque normalizar
-        datosNormalizados=variables
+        print(self.datos.drop(labels=['cod', 'artista','nombre'],axis=1).head())
+        print()
+        print(variables.describe())
+
+        self.determinarK(variables)#para determinar un valor de k aceptable, opcional
         #
-        self.determinarK(datosNormalizados)#para determinar un valor de k aceptable, opcional
-        #
-        self.kmeansPro(datosNormalizados=datosNormalizados,datosOriginal=self.datos)#realizao entrenamiento
-        #
-        self.graficarFrecuencias(self.datos)
-        # self.prepararParaGraficaren2D(datosNormalizados,self.datos)
+        self.kmeansPro(datosNormalizados=variables,datosOriginal=self.datos)#realizao entrenamiento
+        # #
+        self.graficarFrecuencias(variables)
+        # # self.prepararParaGraficaren2D(datosNormalizados,self.datos)
         self.guardarDatos(self.datos,'C:/Users/chris/Desktop/Universidad de Cuenca/IA/DATASETS/datos.csv')
 
     def determinarK(self,datos):
         wcss=[] #lista vacia para almacenar los valoes wcss
-        for i in range(1,11):
+        for i in range(1,11):#num de agrupaciones
             kmeans=KMeans(n_clusters=i,max_iter=500)
             kmeans.fit(datos)
             wcss.append(kmeans.inertia_)
@@ -46,13 +54,13 @@ class Kmeans:
         # print('**************************************************')
         # print(x.info())
         #una vez listo el cluster, agrego la clasificacion al archivo original
-        datosOriginal['KMeans_cluster']=cluster.labels_
+        datosOriginal['Clasificacion']=cluster.labels_
 
     def prepararParaGraficaren2D(self,datosNormalizados,datosOriginales):
         pca=PCA(n_components=2)
         pca_datos=pca.fit_transform(datosNormalizados)
         pca_datos_df=pd.DataFrame(data=pca_datos,columns=['x','y'])
-        pca_nombres_vinos=pd.concat([pca_datos_df,datosOriginales[['KMeans_cluster']]],axis=1)
+        pca_nombres_vinos=pd.concat([pca_datos_df,datosOriginales[['Clasificacion']]],axis=1)
         print(pca_nombres_vinos)
 
         fig=plt.figure(figsize=(6,6))
@@ -83,19 +91,20 @@ class Kmeans:
         # plt.show()
     def graficarFrecuencias(self,df):
         fig, axes = plt.subplots(2, 2, figsize=(15, 8))
-        print(df.info())
+
 
         axes[0, 0].hist([float(m) for m in df['danceability']])
-        axes[0, 0].set_title('Danceability', fontsize=15)
+        axes[0, 0].set_title('danceability', fontsize=15)
         axes[0, 1].hist([float(m) for m in df['energy']])
-        axes[0, 1].set_title('Energy', fontsize=15)
+        axes[0, 1].set_title('energy', fontsize=15)
         axes[1, 0].hist([float(m) for m in df['valence']])
-        axes[1, 0].set_title('Valence', fontsize=15)
-        axes[1, 1].hist([float(m) for m in df['loudness']])
-        axes[1, 1].set_title('Loudness', fontsize=15)
+        axes[1, 0].set_title('valence', fontsize=15)
+        axes[1, 1].hist([float(m) for m in df['tempo']])
+        axes[1, 1].set_title('tempo', fontsize=15)
         plt.show()
     def guardarDatos(self,datos,direccion):
-        datos.sort_values('KMeans_cluster', ascending=True, inplace=True)
+        # datos.sort_values('Clasificacion', ascending=True, inplace=True)
+        print(datos.head())
         datos.to_csv(direccion)
 
 
