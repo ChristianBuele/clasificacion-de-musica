@@ -18,9 +18,6 @@ class Kmeans:
         variables=pd.DataFrame(aux,dtype='float64')
         variables.insert(0,'tempo',tempoAux['tempo'])
         variables.insert(0, 'Loudness', tempoAux['loudness'])
-        # grabar=self.datos.drop(labels=['cod', 'artista', 'tempo','loudness'],axis=1)
-        # grabar.insert(0, 'tempo', tempoAux['tempo'])
-        # grabar.insert(0, 'Loudness', tempoAux['loudness'])
 
         print(self.datos.drop(labels=['cod', 'artista','nombre'],axis=1).head())
         print()
@@ -28,11 +25,12 @@ class Kmeans:
 
         self.determinarK(variables)#para determinar un valor de k aceptable, opcional
         #
-        self.kmeansPro(datosNormalizados=variables,datosOriginal=self.datos)#realizao entrenamiento
+        cluster=self.kmeansPro(datosNormalizados=variables,datosOriginal=self.datos)#realizao entrenamiento
         # #
         self.graficarFrecuencias(variables)
         # # self.prepararParaGraficaren2D(datosNormalizados,self.datos)
         self.guardarDatos(self.datos,'C:/Users/chris/Desktop/Universidad de Cuenca/IA/DATASETS/datos.csv')
+        self.test(red=cluster,dato=variables.loc[[15], :])
 
     def determinarK(self,datos):
         wcss=[] #lista vacia para almacenar los valoes wcss
@@ -48,13 +46,14 @@ class Kmeans:
         plt.show()
 
     def kmeansPro(self,datosNormalizados,datosOriginal):
-        cluster=KMeans(n_clusters=4,max_iter=500)#creacion del modelo
+        cluster=KMeans(n_clusters=3,max_iter=500)#creacion del modelo
         cluster.fit(datosNormalizados)
         # x=cluster.predict(datosNormalizados.head(1))
         # print('**************************************************')
         # print(x.info())
         #una vez listo el cluster, agrego la clasificacion al archivo original
         datosOriginal['Clasificacion']=cluster.labels_
+        return cluster
 
     def prepararParaGraficaren2D(self,datosNormalizados,datosOriginales):
         pca=PCA(n_components=2)
@@ -103,9 +102,17 @@ class Kmeans:
         axes[1, 1].set_title('tempo', fontsize=15)
         plt.show()
     def guardarDatos(self,datos,direccion):
-        # datos.sort_values('Clasificacion', ascending=True, inplace=True)
+        datos.sort_values('Clasificacion', ascending=True, inplace=True)
         print(datos.head())
         datos.to_csv(direccion)
+
+    def test(self,red,dato):
+        print('TEST *************************')
+        print(dato)
+        x=red.predict(dato)
+        print(x)
+
+
 
 
 
